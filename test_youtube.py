@@ -6,6 +6,10 @@ from collectors.youtube import (
     YouTubeCollector
 )
 
+from processor.youtube_score import (
+    calcular_scores
+)
+
 from notifications.email import (
     enviar_relatorio
 )
@@ -37,6 +41,8 @@ def main():
         quantidade=5
     )
 
+    videos = calcular_scores(videos)
+
     for video in videos:
 
         print()
@@ -63,6 +69,23 @@ def main():
 
         print(
             f"URL: {video.url}"
+        )
+
+        print(
+            f"Score: {video.score}/100"
+        )
+
+        if video.score >= 80:
+            classificacao = "Excelente"
+        elif video.score >= 60:
+            classificacao = "Bom"
+        elif video.score >= 40:
+            classificacao = "Médio"
+        else:
+            classificacao = "Baixo"
+
+        print(
+            f"Classificação: {classificacao}"
         )
 
     report_texto = Report().gerar(videos)
