@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>Pulso Social | MentorIA</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Pulso Social, início">
+        <span class="brand-mark">M</span>
+        <span>MENTORIA<span class="brand-dot">.</span></span>
+      </a>
+      <span class="local-badge"><span class="live-dot"></span> PAINEL LOCAL</span>
+    </header>
+
+    <main>
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">INSTAGRAM <span>/</span> LINKEDIN</p>
+          <h1>Pulso <em>Social</em></h1>
+          <p class="heading-note">Desempenho de conteúdo em um só lugar.</p>
+        </div>
+        <div class="heading-actions">
+          <p id="updated-at" class="updated-at">Aguardando primeira atualização</p>
+          <button id="refresh-button" class="refresh-button" type="button">
+            <span aria-hidden="true">↻</span> Atualizar dados
+          </button>
+        </div>
+      </section>
+
+      <section class="summary" aria-label="Resumo das publicações">
+        <article class="summary-item summary-total">
+          <p>PUBLICAÇÕES</p>
+          <strong id="total-posts">—</strong>
+          <span>no período disponível</span>
+        </article>
+        <article class="summary-item">
+          <p>VISUALIZAÇÕES</p>
+          <strong id="total-views">—</strong>
+          <span>impressões quando informado pelo LinkedIn</span>
+        </article>
+        <article class="summary-item">
+          <p>INTERAÇÕES</p>
+          <strong id="total-interactions">—</strong>
+          <span>curtidas, compartilhamentos, salvamentos e cliques</span>
+        </article>
+        <article class="summary-item summary-score">
+          <p>MELHOR SCORE</p>
+          <strong id="best-score">—</strong>
+          <span>de 100 pontos</span>
+        </article>
+      </section>
+
+      <section class="network-status" aria-label="Estado das conexões">
+        <div class="section-label"><span>CONEXÕES</span><span class="rule"></span></div>
+        <div class="network-list">
+          <div class="network-line">
+            <span class="network-name"><i class="network-icon instagram-icon">ig</i> Instagram</span>
+            <span id="instagram-status" class="network-message">Aguardando atualização</span>
+            <span id="instagram-count" class="network-count">—</span>
+          </div>
+          <div class="network-line">
+            <span class="network-name"><i class="network-icon linkedin-icon">in</i> LinkedIn</span>
+            <span id="linkedin-status" class="network-message">Aguardando atualização</span>
+            <span id="linkedin-count" class="network-count">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="content-heading">
+          <div>
+            <p class="eyebrow">ANÁLISE DE CONTEÚDO</p>
+            <h2>Publicações</h2>
+          </div>
+          <div class="content-tools">
+            <label class="search-box">
+              <span class="visually-hidden">Buscar publicação</span>
+              <span aria-hidden="true">⌕</span>
+              <input id="search-input" type="search" placeholder="Buscar publicação">
+            </label>
+            <label class="sort-control">
+              <span class="visually-hidden">Ordenar publicações</span>
+              <select id="sort-select">
+                <option value="score">Maior score</option>
+                <option value="date">Mais recentes</option>
+                <option value="views">Mais visualizadas</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="filters" role="tablist" aria-label="Filtrar por rede">
+          <button class="filter-button is-active" type="button" role="tab" aria-selected="true" data-platform="all">Todas <span id="all-filter-count">0</span></button>
+          <button class="filter-button" type="button" role="tab" aria-selected="false" data-platform="instagram">Instagram <span id="instagram-filter-count">0</span></button>
+          <button class="filter-button" type="button" role="tab" aria-selected="false" data-platform="linkedin">LinkedIn <span id="linkedin-filter-count">0</span></button>
+          <span class="score-key"><span class="score-key-mark"></span> Score baseado em ritmo e engajamento</span>
+        </div>
+
+        <div class="table-heading" aria-hidden="true">
+          <span>CONTEÚDO</span><span>SCORE</span><span>VIEWS / ALCANCE</span><span>CURTIDAS</span><span>COMENTÁRIOS</span><span>COMPART.</span><span>SALVOS</span><span>CLIQUES</span>
+        </div>
+        <div id="post-list" class="post-list" aria-live="polite">
+          <div class="empty-state">
+            <span class="empty-symbol">↗</span>
+            <h3>Seu conteúdo aparece aqui</h3>
+            <p>Conecte as credenciais das redes e atualize os dados.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <span>MENTORIA SOCIAL</span>
+        <span>Score: 40% views/dia · 35% interações/views · 25% comentários/views</span>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

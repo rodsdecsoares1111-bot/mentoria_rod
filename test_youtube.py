@@ -1,124 +1,93 @@
-import os
+import re
+import unittest
 
-from dotenv import load_dotenv
-
-from collectors.youtube import (
-    YouTubeCollector
-)
-
-from processor.youtube_score import (
-    calcular_scores
-)
-
-from notifications.email import (
-    enviar_relatorio
-)
-
-from reports.report import (
-    Report
-)
-
-load_dotenv()
-
-EMAIL_REMETENTE = os.getenv("EMAIL_REMETENTE")
-EMAIL_SENHA = os.getenv("EMAIL_SENHA")
-EMAIL_DESTINATARIO = os.getenv("EMAIL_DESTINATARIO")
-EMAIL_SMTP_SERVIDOR = os.getenv(
-    "EMAIL_SMTP_SERVIDOR",
-    "smtp.gmail.com"
-)
-EMAIL_SMTP_PORTA = os.getenv(
-    "EMAIL_SMTP_PORTA",
-    "465"
-)
+from models.video import Video
+from processor.youtube_score import calcular_scores
+from reports.report import Report
 
 
-def main():
-
-    collector = YouTubeCollector()
-
-    videos = collector.coletar_videos(
-        quantidade=5
+def criar_video(video_id, visualizacoes, curtidas, comentarios):
+    return Video(
+        id=video_id,
+        titulo=f"Vídeo {video_id}",
+        descricao="Descrição de teste",
+        url=f"https://youtube.com/watch?v={video_id}",
+        data_publicacao="2026-09-01T00:00:00Z",
+        thumbnail="",
+        duracao="PT1M",
+        visualizacoes=visualizacoes,
+        curtidas=curtidas,
+        comentarios=comentarios,
     )
 
-    videos = calcular_scores(videos)
 
-    for video in videos:
+def selecionar_novos_videos(videos_atuais, videos_novos):
+    ids_atuais = {video.id for video in videos_atuais}
+    return [video for video in videos_novos if video.id not in ids_atuais]
 
-        print()
-        print("=" * 50)
 
-        print(
-            f"Título: {video.titulo}"
-        )
+def duracao_em_segundos(duracao):
+    partes = re.fullmatch(
+        r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?",
+        duracao or "",
+    )
+    if not partes:
+        return 0
+    horas, minutos, segundos = (int(valor or 0) for valor in partes.groups())
+    return (horas * 3600) + (minutos * 60) + segundos
 
-        print(
-            f"Visualizações: "
-            f"{video.visualizacoes}"
-        )
 
-        print(
-            f"Curtidas: "
-            f"{video.curtidas}"
-        )
+def eh_short(video):
+    return duracao_em_segundos(video.duracao) <= 60
 
-        print(
-            f"Comentários: "
-            f"{video.comentarios}"
-        )
 
-        print(
-            f"URL: {video.url}"
-        )
+class TestYouTubeScore(unittest.TestCase):
+    def test_calcula_score_e_prioriza_video_com_maior_engajamento(self):
+        videos = [
+            criar_video("melhor", 1000, 100, 20),
+            criar_video("menor", 500, 10, 1),
+        ]
 
-        print(
-            f"Score: {video.score}/100"
-        )
+        calcular_scores(videos)
 
-        if video.score >= 80:
-            classificacao = "Excelente"
-        elif video.score >= 60:
-            classificacao = "Bom"
-        elif video.score >= 40:
-            classificacao = "Médio"
-        else:
-            classificacao = "Baixo"
+        self.assertEqual(videos[0].score, 100.0)
+        self.assertLess(videos[1].score, videos[0].score)
 
-        print(
-            f"Classificação: {classificacao}"
-        )
+    def test_lista_vazia_nao_falha(self):
+        self.assertEqual(calcular_scores([]), [])
 
-    report_texto = Report().gerar(videos)
+    def test_seleciona_apenas_videos_novos(self):
+        atuais = [criar_video("existente", 100, 10, 2)]
+        novos = [
+            criar_video("existente", 100, 10, 2),
+            criar_video("inovador", 500, 50, 5),
+        ]
 
-    if not EMAIL_REMETENTE or not EMAIL_SENHA or not EMAIL_DESTINATARIO:
-        print(
-            "\nE-mail não configurado. "
-            "O relatório foi gerado somente no terminal."
-        )
-        return
+        result = selecionar_novos_videos(atuais, novos)
 
-    try:
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].id, "inovador")
 
-        enviar_relatorio(
-            remetente=EMAIL_REMETENTE,
-            senha=EMAIL_SENHA,
-            destinatario=EMAIL_DESTINATARIO,
-            assunto="Teste - Relatório dos vídeos do YouTube",
-            conteudo=report_texto,
-            servidor=EMAIL_SMTP_SERVIDOR,
-            porta=int(EMAIL_SMTP_PORTA)
-        )
+    def test_separa_short_de_video_normal_pela_duracao(self):
+        short = criar_video("short", 100, 10, 1)
+        short.duracao = "PT59S"
+        video_normal = criar_video("normal", 100, 10, 1)
+        video_normal.duracao = "PT1M1S"
 
-        print("\nRelatório de teste enviado por e-mail.")
+        self.assertTrue(eh_short(short))
+        self.assertFalse(eh_short(video_normal))
 
-    except Exception as error:
 
-        print(
-            f"\nErro ao enviar o relatório de teste: "
-            f"{error}"
-        )
+class TestReport(unittest.TestCase):
+    def test_relatorio_inclui_score_e_classificacao(self):
+        video = criar_video("abc", 100, 10, 2)
+        video.score = 85.0
+
+        report = Report().gerar_texto([video])
+
+        self.assertIn("Score: 85.0/100", report)
+        self.assertIn("Classificação: Excelente", report)
 
 
 if __name__ == "__main__":
-
-    main()
+    unittest.main()
