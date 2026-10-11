@@ -15,7 +15,7 @@
         <span class="brand-mark">M</span>
         <span>MENTORIA<span class="brand-dot">.</span></span>
       </a>
-      <span class="local-badge"><span class="live-dot"></span> PAINEL LOCAL</span>
+      <span class="local-badge"><span class="live-dot"></span> <span id="panel-mode">PAINEL LOCAL</span></span>
     </header>
 
     <main>
@@ -120,5 +120,34 @@
       </footer>
     </main>
   </div>
+
+  <dialog id="post-dialog" class="post-dialog" aria-labelledby="detail-title">
+    <div class="dialog-inner">
+      <header class="dialog-heading">
+        <div class="dialog-heading-copy">
+          <p id="detail-network" class="eyebrow"></p>
+          <h2 id="detail-title"></h2>
+          <p id="detail-date" class="detail-date"></p>
+        </div>
+        <button id="close-post-dialog" class="dialog-close" type="button" aria-label="Fechar desempenho">×</button>
+      </header>
+
+      <section aria-label="Métricas da publicação">
+        <div id="detail-metrics" class="detail-metrics"></div>
+      </section>
+
+      <section class="ai-advice" aria-labelledby="ai-advice-title">
+        <div class="ai-advice-heading">
+          <span class="ai-mark" aria-hidden="true">AI</span>
+          <div>
+            <p class="eyebrow">LEITURA DO POST</p>
+            <h3 id="ai-advice-title">Sugestão para o próximo conteúdo</h3>
+          </div>
+        </div>
+        <p id="ai-advice-text" class="ai-advice-text" role="status" aria-live="polite">Aguardando análise...</p>
+        <button id="retry-ai-button" class="retry-ai-button" type="button" hidden>Tentar novamente</button>
+      </section>
+    </div>
+  </dialog>
 </body>
 </html>

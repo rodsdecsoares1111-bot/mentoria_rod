@@ -10,4 +10,6 @@ Painel local para acompanhar publicações do Instagram e LinkedIn, comparar mé
 
 O Instagram precisa de um token da Graph API e do ID da conta profissional. O LinkedIn precisa de um token com acesso à organização e do ID numérico ou URN da organização. A disponibilidade de impressões e estatísticas de cada publicação depende das permissões aprovadas para o aplicativo em cada plataforma.
 
+Cada publicação tem a ação “Ver desempenho + dica IA”. Ela envia ao servidor o identificador do post selecionado; a legenda e as métricas coletadas são analisadas pela OpenAI. Configure `OPENAI_API_KEY` no `.env`; `OPENAI_MODEL` é opcional e usa `gpt-4o-mini` por padrão. Métricas não liberadas pela API são informadas à IA como indisponíveis, não como zero.
+
 O score mantém os pesos existentes: 40% visualizações por dia, 35% interações por visualização e 25% comentários por visualização. Interações incluem curtidas, compartilhamentos, salvamentos e cliques quando a API fornece esses dados. Publicações sem métricas liberadas aparecem com o valor indisponível.
