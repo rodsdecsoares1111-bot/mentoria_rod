@@ -13,49 +13,6 @@ class AIAnalyzer:
         self.client = client or OpenAI(api_key=api_key, timeout=45)
         self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
-    def analisar_video(self, video):
-
-        prompt = f"""
-Analise o seguinte vídeo do YouTube.
-
-Título:
-{video.titulo}
-
-Descrição:
-{video.descricao}
-
-Visualizações:
-{video.visualizacoes}
-
-Curtidas:
-{video.curtidas}
-
-Comentários:
-{video.comentarios}
-
-Forneça:
-
-1. Resumo do conteúdo provável
-2. Tema principal
-3. Público-alvo
-4. Avaliação do engajamento
-5. Sugestão para melhorar o conteúdo
-"""
-
-        response = (
-            self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            )
-        )
-
-        return response.choices[0].message.content
-
     def analisar_post_social(self, post):
         availability = post.get("metric_availability", {})
 
